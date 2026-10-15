@@ -1,0 +1,51 @@
+{
+  "name": "fieldmark",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Persistent engineering equipment research and evidence library",
+  "author": "Fieldmark",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/build-electron.mjs",
+    "start": "electron .",
+    "test": "tsx --test tests/*.test.ts",
+    "test:ui": "node scripts/smoke-ui.mjs",
+    "check:core": "tsc --noEmit -p tsconfig.core.json",
+    "package:win": "npm run build && electron-builder --win nsis --x64",
+    "package:dir": "npm run build && electron-builder --dir --win --x64"
+  },
+  "dependencies": {
+    "parse5": "^7.3.0",
+    "ipaddr.js": "^2.2.0",
+    "fflate": "^0.8.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "robots-parser": "^3.0.1",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "electron": "44.7.2",
+    "electron-builder": "26.17.0",
+    "esbuild": "^0.28.0",
+    "playwright": "^1.56.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^8.0.13"
+  },
+  "build": {
+    "appId": "app.fieldmark.desktop",
+    "productName": "Fieldmark",
+    "directories": { "output": "release" },
+    "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
+    "asar": true,
+    "npmRebuild": false,
+    "win": { "target": ["nsis"], "signAndEditExecutable": false },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "artifactName": "Fieldmark-Setup-${version}.${ext}" }
+  }
+}

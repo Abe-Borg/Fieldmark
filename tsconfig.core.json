@@ -1,0 +1,5 @@
+{
+ "extends": "./tsconfig.json",
+ "include": ["src", "electron/research.ts", "electron/research-tools.ts", "electron/store.ts", "electron/export.ts", "electron/validation.ts", "tests", "vite.config.ts"],
+ "exclude": ["electron/main.ts", "electron/preload.ts"]
+}

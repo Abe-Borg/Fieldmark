@@ -1,0 +1,15 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+let html = readFileSync('dist/index.html', 'utf8');
+const scriptPath = html.match(/<script[^>]+src="([^"]+)"[^>]*><\/script>/)?.[1];
+const stylePath = html.match(/<link[^>]+href="([^"]+\.css)"[^>]*>/)?.[1];
+if (!scriptPath || !stylePath) throw new Error('The renderer build must contain a bundled script and stylesheet.');
+const js = readFileSync(resolve('dist', scriptPath), 'utf8').replace(/<\/script/gi, '<\\/script');
+const css = readFileSync(resolve('dist', stylePath), 'utf8');
+const hash = createHash('sha256').update(js).digest('base64');
+html = html.replace(/<script[^>]+src="[^"]+"[^>]*><\/script>/, () => `<script type="module">${js}</script>`);
+html = html.replace(/<link[^>]+href="[^"]+\.css"[^>]*>/, () => `<style>${css}</style>`);
+html = html.replace(/script-src 'self'/, `script-src 'sha256-${hash}'`).replace(/connect-src [^;]+/, "connect-src 'none'");
+writeFileSync('dist/Fieldmark-preview.html', html);
+console.log('Created offline Fieldmark-preview.html (UI only; desktop features remain explicitly unavailable).');

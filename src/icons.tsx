@@ -1,0 +1,43 @@
+import type { SVGProps } from 'react';
+type Props = SVGProps<SVGSVGElement> & { size?: number };
+function icon(paths: string[]) {
+  return function Icon({ size = 24, strokeWidth = 1.8, ...props }: Props) {
+    return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths.map((d, index) => <path d={d} key={index} />)}</svg>;
+  };
+}
+export const ArrowDownToLine = icon(['M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4']);
+export const ArrowLeft = icon(['M19 12H5m6-6-6 6 6 6']);
+export const ArrowRight = icon(['M5 12h14m-6-6 6 6-6 6']);
+export const ArrowUpRight = icon(['M6 18 18 6M6 6h12v12']);
+export const BookOpen = icon(['M12 5v16M12 5C8 2 4 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-2-1-6-2-10 1']);
+export const Box = icon(['m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10v9M3 8l9 5 9-5M7.5 5.5l9 5']);
+export const Check = icon(['m5 12 4 4L19 6']);
+export const CheckCircle2 = icon(['M21 11v1a9 9 0 1 1-5.3-8.2M9 11l3 3L22 4']);
+export const ChevronRight = icon(['m9 5 7 7-7 7']);
+export const Circle = icon(['M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0']);
+export const Clock3 = icon(['M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M12 7v5h4']);
+export const Compass = icon(['M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0m-5-5-3 6-6 3 3-6 6-3Z']);
+export const Download = icon(['M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5']);
+export const ExternalLink = icon(['M14 3h7v7m0-7L10 14M10 4H4v16h16v-6']);
+export const File = icon(['M14 2H5v20h14V7l-5-5Zm0 0v6h5']);
+export const FileText = icon(['M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8m-8 4h8']);
+export const FileSearch = icon(['M14 2H4v20h12M14 2v6h6l-6-6ZM20 14a4 4 0 1 1-8 0 4 4 0 0 1 8 0m-1 3 4 4']);
+export const FileCheck2 = icon(['M14 2H4v20h12M14 2v6h6l-6-6ZM10 16l3 3 8-8']);
+export const FolderArchive = icon(['M3 20h18V6H11L9 3H3v17ZM12 6v3m0 2v3m0 2v2']);
+export const FolderOpen = icon(['M3 17V4h6l2 3h10v4M3 20h16l3-9H6l-3 9Z']);
+export const HelpCircle = icon(['M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4m0 4h.01']);
+export const Layers3 = icon(['m12 3 10 5-10 5L2 8l10-5Zm-10 9 10 5 10-5M2 16l10 5 10-5']);
+export const LoaderCircle = icon(['M20 8a9 9 0 1 1-8-5']);
+export const MapPin = icon(['M19 10c0 6-7 12-7 12S5 16 5 10a7 7 0 1 1 14 0Zm-4 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0']);
+export const Pause = icon(['M7 4h3v16H7V4Zm7 0h3v16h-3V4Z']);
+export const Play = icon(['m7 4 14 8-14 8V4Z']);
+export const Plus = icon(['M12 5v14M5 12h14']);
+export const Radar = icon(['M21 12a9 9 0 1 1-9-9m5 9a5 5 0 1 1-5-5m0 5 9-9m-7 9a2 2 0 1 1-4 0 2 2 0 0 1 4 0']);
+export const Search = icon(['M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0m-2 5 6 6']);
+export const Settings2 = icon(['M4 7h7m4 0h5M4 17h3m4 0h9M15 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0M11 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0']);
+export const ShieldCheck = icon(['M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6l-9-4ZM8 12l3 3 6-6']);
+export const Sparkles = icon(['m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3ZM20 2v4m-2-2h4']);
+export const Terminal = icon(['M3 4h18v16H3V4Zm3 4 4 4-4 4m7 0h5']);
+export const Trash2 = icon(['M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7']);
+export const TriangleAlert = icon(['m12 3 10 18H2L12 3Zm0 6v5m0 3h.01']);
+export const X = icon(['m6 6 12 12M6 18 18 6']);
