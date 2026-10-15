@@ -1,8 +1,32 @@
+# Dependencies and build output
 node_modules/
 dist/
 dist-electron/
 release/
+*.tsbuildinfo
+
+# Local configuration, credentials, and code-signing material
 .env*
+*.pfx
+*.p12
+.claude/settings.local.json
+
+# Test and tooling output
 test-results/
+playwright-report/
+blob-report/
+coverage/
 *.log
+npm-debug.log*
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Python virtual environments from local tooling (the project itself is Node.js only)
 venv/
+.venv/

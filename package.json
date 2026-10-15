@@ -3,16 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "description": "Persistent engineering equipment research and evidence library",
-  "author": "Fieldmark",
+  "author": { "name": "Abraham Borg" },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "homepage": "https://github.com/abe-borg/fieldmark",
+  "repository": { "type": "git", "url": "https://github.com/abe-borg/fieldmark.git" },
+  "engines": { "node": ">=22.12" },
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "tsc --noEmit && vite build && node scripts/build-electron.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/build-electron.mjs && node scripts/third-party-notices.mjs",
     "start": "electron .",
     "test": "tsx --test tests/*.test.ts",
     "test:ui": "node scripts/smoke-ui.mjs",
     "check:core": "tsc --noEmit -p tsconfig.core.json",
+    "licenses": "node scripts/third-party-notices.mjs",
+    "icon": "node scripts/make-icon.mjs",
     "package:win": "npm run build && electron-builder --win nsis --x64",
     "package:dir": "npm run build && electron-builder --dir --win --x64"
   },
@@ -41,11 +47,17 @@
   "build": {
     "appId": "app.fieldmark.desktop",
     "productName": "Fieldmark",
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "dist-electron/**/*", "package.json"],
+    "copyright": "Copyright © 2026 Abraham Borg. All rights reserved.",
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": ["dist/**/*", "!dist/THIRD-PARTY-NOTICES.txt", "!dist/Fieldmark-preview.html", "dist-electron/**/*", "package.json", "!node_modules/**/*"],
+    "extraResources": [
+      { "from": "LICENSE.txt", "to": "LICENSE.txt" },
+      { "from": "dist/THIRD-PARTY-NOTICES.txt", "to": "THIRD-PARTY-NOTICES.txt" }
+    ],
     "asar": true,
     "npmRebuild": false,
-    "win": { "target": ["nsis"], "signAndEditExecutable": false },
-    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "artifactName": "Fieldmark-Setup-${version}.${ext}" }
+    "publish": null,
+    "win": { "target": ["nsis"], "icon": "build/icon.ico" },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "license": "LICENSE.txt", "artifactName": "Fieldmark-Setup-${version}.${ext}" }
   }
 }

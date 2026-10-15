@@ -105,7 +105,7 @@ async function initialize() {
  app.on('activate', () => { if (!window) createWindow(); });
 }
 function createWindow() {
- window = new BrowserWindow({ width: 1450, height: 940, minWidth: 980, minHeight: 680, title: 'Fieldmark', backgroundColor: '#f5f4ef', autoHideMenuBar: true, webPreferences: { preload: join(here, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true } });
+ window = new BrowserWindow({ width: 1450, height: 940, minWidth: 980, minHeight: 680, title: 'Fieldmark', backgroundColor: '#f5f4ef', autoHideMenuBar: true, icon: app.isPackaged ? undefined : join(here, '../build/icon.png'), webPreferences: { preload: join(here, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true } });
  window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
  window.webContents.on('will-navigate', event => event.preventDefault());
  window.webContents.on('will-attach-webview', event => event.preventDefault());

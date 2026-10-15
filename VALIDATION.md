@@ -32,3 +32,29 @@ Network-oriented tests use controlled fixtures and simulated responses. They do 
 4. Review returned model applicability against the original documents. Apply code signing before distributing an installer to users.
 
 `Preview.html` in the source delivery is a self-contained, offline UI preview. It explicitly cannot run live research, save API credentials or perform desktop file operations.
+
+## Follow-up verification, 2026-10-15 (Linux container, Node.js 22.22.0, npm 10.9.4)
+
+Performed while turning the repository into an installable Windows application, selecting the license, and adding the third-party notices build step.
+
+### Passed
+
+- **Online dependency installation:** `npm install` resolved every package from the npm registry (313 packages). The resulting `package-lock.json` is committed; `npm ci` is now the supported install command.
+- **Strict TypeScript for the whole project:** `tsc --noEmit` with the real Electron type declarations, including `electron/main.ts` and `electron/preload.ts`, which the earlier record could not check.
+- **32 automated core tests:** `npm test`, unchanged scenarios, all passing.
+- **Production bundles:** Vite 8.3.4 renderer bundle, esbuild 0.28.2 main and preload bundles.
+- **Third-party notices:** `scripts/third-party-notices.mjs` enumerated the 9 production packages (all MIT or BSD-2-Clause), passed the permissive-license gate, and wrote `dist/THIRD-PARTY-NOTICES.txt`.
+- **Icon generation:** `scripts/make-icon.mjs` rendered `build/icon.svg` with Chromium into `build/icon.png` and a nine-size `build/icon.ico` (16 to 256 px); legibility checked at 16, 24, 32, 48 and 256 px.
+- **Offline UI smoke test:** `npm run test:ui` against the Chromium build in the container: initial page, sample, filters, answer, activity, persistence, default draft request, live-mode rejection, settings, vault; no browser errors.
+- **Unpacked Windows build:** `electron-builder --dir --win --x64` downloaded Electron 44.7.2 and produced `release/win-unpacked`. `Fieldmark.exe` carries ProductName `Fieldmark`, CompanyName `Abraham Borg`, the copyright string and version 0.1.0; all nine icon images are embedded in it; `resources/LICENSE.txt` (CRLF, as NSIS requires) and `resources/THIRD-PARTY-NOTICES.txt` sit beside `app.asar`; `LICENSE.electron.txt` and `LICENSES.chromium.html` are in the application root. Signing was skipped with an informational message because no certificate is configured.
+- **Package contents:** excluding `node_modules` from the asar (every dependency is already bundled by esbuild and Vite) reduced `app.asar` from 17.9 MB to 1.8 MB; the bundle's only imports are `electron` and Node builtins. The smoke-test preview page is excluded as well.
+- **License text integrity:** `LICENSE.txt` was generated from the official `PolyForm-Strict-1.0.0.md` in the PolyForm Project repository and checked word for word against it (549 words identical); only Markdown markers were removed and lines were wrapped.
+
+### Not completed in this environment
+
+- **NSIS installer:** electron-builder downloaded NSIS and its resources but needs Wine on Linux to finish the installer, which this container does not have. The installer must be produced on Windows with `npm run package:win` or `Build-Windows.ps1`. The installer EULA page, shortcuts, install and uninstall flow, and first launch of the installed application therefore remain unverified.
+- **Live Claude investigation:** unchanged; no API key was supplied or used.
+
+### Next release checks
+
+In addition to the list above: build the installer on Windows, confirm the license page appears and must be accepted, confirm the installed `Fieldmark.exe` shows the Fieldmark icon in Explorer, the taskbar, and Programs and Features, and confirm `resources\LICENSE.txt` and `resources\THIRD-PARTY-NOTICES.txt` are present in the installation directory.

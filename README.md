@@ -20,14 +20,16 @@ This is an implemented development version, not a published or signed release. S
 
 ## Build and run on Windows
 
-Requirements: Windows 10/11 x64, Node.js 24 LTS with npm, and internet access to the npm registry and Electron release downloads. Application users will not need Node once an installer is built.
+Requirements: Windows 10/11 x64, Node.js 22.12 or newer (24 LTS recommended) with npm, and internet access to the npm registry and Electron release downloads. Application users will not need Node once an installer is built.
 
 ```powershell
 cd fieldmark
-npm install
+npm ci
 npm test
 npm run dev
 ```
+
+`package-lock.json` is committed, so `npm ci` installs the exact dependency versions that were verified. Use `npm install` only when you intend to change dependencies, then commit the updated lockfile.
 
 To build a per-user Windows installer:
 
@@ -35,9 +37,17 @@ To build a per-user Windows installer:
 npm run package:win
 ```
 
-The installer will be written to `release/Fieldmark-Setup-0.1.0.exe`. No administrator installation is required. The installer configuration supports choosing the destination directory and creating a desktop shortcut. Signing has not been configured; a distributable release should be code signed. No installer is included unless the release directory actually contains the generated executable.
+The installer is written to `release/Fieldmark-Setup-<version>.exe`, with the version taken from `package.json`. No administrator installation is required. The installer shows the license as a click-through agreement that must be accepted before installation, lets the user choose the destination directory, and creates desktop and Start menu shortcuts. The installed `Fieldmark.exe` carries the Fieldmark icon, product name, version, and copyright, and the installation's `resources` folder contains `LICENSE.txt` and `THIRD-PARTY-NOTICES.txt` next to Electron's own license files. Uninstalling leaves the user's investigations and asset vault in place.
 
-For a single command that installs dependencies, tests, and packages, run `./Build-Windows.ps1`. The script stops on errors. After the first successful online installation, retain the generated `package-lock.json` and use `npm ci` for reproducible subsequent builds. The development environment could not resolve the registry, so no fabricated lockfile is supplied.
+For a single command that installs dependencies, tests, and packages, run `./Build-Windows.ps1`. The script stops on errors and confirms that the installer file exists before reporting success.
+
+Notes for packaging:
+
+- On the first packaging run electron-builder downloads the Electron runtime and its Windows resource-editing tools and caches them in the local application data folder for later builds.
+- If that tool download fails to extract with a symbolic-link privilege error, enable Developer Mode in Windows Settings (System, For developers) or run the build once from an elevated PowerShell. The extracted tools are reused afterwards.
+- Code signing is not configured. electron-builder signs the executable and installer automatically when a certificate is supplied through its standard `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` environment variables. Without one it produces unsigned binaries, and Windows SmartScreen will warn users until a signed installer is distributed. Never commit certificate files; `*.pfx` and `*.p12` are ignored by git.
+- The application icon is rendered from `build/icon.svg` by `npm run icon`, which uses the Playwright Chromium driver against an installed Chrome or Edge (or `FIELDMARK_BROWSER=<path>`). The generated `build/icon.png` and `build/icon.ico` are committed, so the icon step is only needed after editing the SVG.
+- `npm run build` also runs `npm run licenses`, which writes `dist/THIRD-PARTY-NOTICES.txt` from the installed production dependencies and stops the build if any of them is outside the permissive license allowlist. See [License](#license).
 
 ## First investigation
 
@@ -104,5 +114,19 @@ Verified against the official documentation on 2026-10-15:
 - [Electron security](https://www.electronjs.org/docs/latest/tutorial/security/)
 - [Electron credential storage](https://www.electronjs.org/docs/latest/api/safe-storage)
 - [NSIS installer configuration](https://www.electron.build/nsis/)
+- [PolyForm Strict License 1.0.0](https://polyformproject.org/licenses/strict/1.0.0)
 
-The project is private by default. A distribution license has not been selected.
+## License
+
+Fieldmark is proprietary software, copyright Abraham Borg, made available under the [PolyForm Strict License 1.0.0](https://polyformproject.org/licenses/strict/1.0.0). The complete text is in [LICENSE.txt](LICENSE.txt), which the Windows installer presents as a click-through agreement. In summary, and subject to the license text itself:
+
+- Anyone may install and use Fieldmark for noncommercial purposes: personal study, hobby projects, research and testing for public knowledge, and use by charitable, educational, public research, public safety or health, environmental protection, and government organizations.
+- Nobody may distribute Fieldmark, modify it, or make new works based on it.
+- Commercial use is not granted by the license. It requires separate written permission from the copyright holder, who may grant it on any terms, for example a paid commercial license for a design firm.
+- The software is provided as is, without warranty or condition, and without liability for damages, as far as the law allows.
+
+This is the most restrictive standardized license the project can carry, and the choice was made after reviewing every component shipped in the application. All production dependencies bundled into the app (React, react-dom, scheduler, zod, parse5, entities, ipaddr.js, fflate, robots-parser) are under the MIT or BSD-2-Clause licenses. The Electron runtime (MIT), Chromium (BSD-3-Clause and the licenses of its components), Node.js (MIT and the licenses of its components), and the NSIS installer (zlib/libpng) are likewise permissive. None of them carries copyleft or source-disclosure obligations, so none restricts the license on Fieldmark's own code. Their only requirement is that their copyright notices and license texts accompany the application. The build satisfies this by generating `THIRD-PARTY-NOTICES.txt` from the installed dependency tree (`npm run licenses`) and packaging it in the installation's `resources` folder beside `LICENSE.txt`; Electron and Chromium notices are placed in the application folder by electron-builder. The same script fails the build if a production dependency is ever added under a license outside the permissive allowlist in `scripts/third-party-notices.mjs`.
+
+Development-only tools (TypeScript and Playwright under Apache-2.0; Vite, esbuild, tsx, electron-builder and their dependencies, including a few MPL-2.0, WTFPL, and Python-2.0 packages such as lightningcss and argparse) are not distributed with the application and create no obligations for its users. The source tree contains no copied third-party code; the UI icons in `src/icons.tsx` are original hand-drawn paths.
+
+The license text is a published legal document that has not been reviewed by a lawyer for this specific product. Have an attorney confirm it meets your goals before a commercial release.
