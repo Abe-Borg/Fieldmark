@@ -14,11 +14,11 @@ Stack: Electron 44 (ESM main process, sandboxed CommonJS preload), React 19 + Ty
 | --- | --- |
 | `npm ci` | Install the exact versions in `package-lock.json`. Use `npm install` only to change dependencies, then commit the lockfile. |
 | `npm run dev` | Bundle main/preload, start Vite on 127.0.0.1:5173, launch Electron against it. |
-| `npm test` | 32 node:test scenarios (research engine, retrieval tools, store/export/validation). Fixtures only; no live network. |
+| `npm test` | 33 node:test scenarios (research engine, retrieval tools, store/export/validation, license policy). Fixtures only; no live network. |
 | `npx tsc --noEmit` | Full strict typecheck, including the Electron host files. `npm run check:core` excludes `electron/main.ts` and `electron/preload.ts`. |
 | `npm run build` | Typecheck, renderer bundle to `dist/`, main/preload to `dist-electron/`, then `scripts/third-party-notices.mjs`. |
 | `npm run test:ui` | Playwright smoke test of the offline preview built from `dist/`. Needs Chrome or Edge installed, or `FIELDMARK_BROWSER=<path to a Chromium executable>`. |
-| `npm run licenses` | Regenerate `dist/THIRD-PARTY-NOTICES.txt` and fail if any production dependency is outside the permissive allowlist. |
+| `npm run licenses` | Regenerate `dist/THIRD-PARTY-NOTICES.txt` and fail if any production dependency is not acceptable under `scripts/license-policy.mjs`. |
 | `npm run icon` | Re-render `build/icon.png` and the multi-size `build/icon.ico` from `build/icon.svg` (uses Playwright/Chromium like `test:ui`). |
 | `npm run package:win` | `build` then electron-builder NSIS x64 installer into `release/`. Windows only in practice. |
 | `./Build-Windows.ps1` | Install, test, and package in one step; verifies the installer file exists. |
@@ -38,7 +38,7 @@ Environment notes: on Linux/CI without GitHub release access set `ELECTRON_SKIP_
 | `electron/validation.ts` | zod schemas for IPC inputs. |
 | `src/` | React renderer (`App.tsx`, `styles.css`, hand-drawn `icons.tsx`), `preview.ts` (browser-only API that rejects desktop features), `shared/` types and the fictional demo mission. |
 | `tests/` | node:test suites. |
-| `scripts/` | dev runner, esbuild bundling, offline preview builder, UI smoke test, third-party notices, icon generator. |
+| `scripts/` | dev runner, esbuild bundling, offline preview builder, UI smoke test, license policy (`license-policy.mjs` with a `.d.mts` declaration so tests can import it), third-party notices, icon generator. |
 | `build/` | electron-builder resources: `icon.svg` (source), `icon.png`, `icon.ico`. |
 | `LICENSE.txt` | PolyForm Strict 1.0.0 with the Fieldmark notice header; also the installer EULA page. Stored with CRLF via `.gitattributes` because NSIS requires it. |
 | `Preview.html` | Self-contained offline UI preview from the original delivery. Not used by the build. |
@@ -70,7 +70,7 @@ Environment notes: on Linux/CI without GitHub release access set `ELECTRON_SKIP_
 ## License policy
 
 - Fieldmark is licensed under the PolyForm Strict License 1.0.0 (noncommercial use only, no distribution, no changes or derivative works, no warranty or liability). `LICENSE.txt` is the official text plus a notice header; do not edit the license wording. Changing the license is the owner's decision.
-- Every production dependency must be on the permissive allowlist in `scripts/third-party-notices.mjs` (MIT, ISC, 0BSD, BSD-2/3-Clause, Apache-2.0, BlueOak-1.0.0, Zlib, Unlicense, CC0-1.0, Python-2.0). No GPL, LGPL, AGPL, MPL, SSPL, EUPL, CC-BY-SA, or "no license" packages may be shipped. The build fails if one appears. Development-only tools may use other licenses because they are not distributed, but prefer permissive ones.
+- Every production dependency must satisfy `scripts/license-policy.mjs`, which evaluates the package's SPDX expression against the permissive allowlist (MIT, ISC, 0BSD, BSD-2/3-Clause, Apache-2.0, BlueOak-1.0.0, Zlib, Unlicense, CC0-1.0, Python-2.0); `AND` requires every operand to be allowed, `OR` any operand, and `WITH` exceptions are rejected until reviewed. `tests/license-policy.test.ts` covers the evaluator. No GPL, LGPL, AGPL, MPL, SSPL, EUPL, CC-BY-SA, or "no license" packages may be shipped. The build fails if one appears. Development-only tools may use other licenses because they are not distributed, but prefer permissive ones.
 - The codebase contains no vendored third-party source. If code is ever copied from elsewhere, record its origin and license in `THIRD-PARTY-NOTICES.txt` generation or do not copy it.
 
 ## Documentation maintenance

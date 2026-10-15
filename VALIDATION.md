@@ -41,7 +41,7 @@ Performed while turning the repository into an installable Windows application, 
 
 - **Online dependency installation:** `npm install` resolved every package from the npm registry (313 packages). The resulting `package-lock.json` is committed; `npm ci` is now the supported install command.
 - **Strict TypeScript for the whole project:** `tsc --noEmit` with the real Electron type declarations, including `electron/main.ts` and `electron/preload.ts`, which the earlier record could not check.
-- **32 automated core tests:** `npm test`, unchanged scenarios, all passing.
+- **33 automated core tests:** `npm test`, the 32 original scenarios plus a new test of the SPDX license-expression evaluator used by the build's license gate, all passing.
 - **Production bundles:** Vite 8.3.4 renderer bundle, esbuild 0.28.2 main and preload bundles.
 - **Third-party notices:** `scripts/third-party-notices.mjs` enumerated the 9 production packages (all MIT or BSD-2-Clause), passed the permissive-license gate, and wrote `dist/THIRD-PARTY-NOTICES.txt`.
 - **Icon generation:** `scripts/make-icon.mjs` rendered `build/icon.svg` with Chromium into `build/icon.png` and a nine-size `build/icon.ico` (16 to 256 px); legibility checked at 16, 24, 32, 48 and 256 px.
