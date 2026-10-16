@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Fieldmark application icon: the sidebar brand mark (three orange bars, skewed) on the navy workspace color. -->
+  <rect width="1024" height="1024" rx="208" ry="208" fill="#14242e"/>
+  <g transform="translate(232 251) skewY(-6)" fill="#e66b39">
+    <rect width="560" height="134"/>
+    <rect y="224" width="403" height="134"/>
+    <rect y="448" width="134" height="134"/>
+  </g>
+</svg>

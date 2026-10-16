@@ -1,0 +1,12 @@
+# Normalize line endings in the repository; check out with platform defaults.
+* text=auto
+
+# NSIS displays the installer EULA from a plain-text file and requires Windows line endings.
+LICENSE.txt text eol=crlf
+
+# PowerShell scripts are edited and run on Windows.
+*.ps1 text eol=crlf
+
+# Binary assets
+*.ico binary
+*.png binary
